@@ -29,6 +29,7 @@ header p{margin:4px 0 0;color:var(--mute);max-width:52ch}
 .power[aria-pressed="true"] .knob svg{stroke:#5a3413}
 .power:focus-visible,.btn:focus-visible,.swatch:focus-visible,.chip:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
 .hint{position:absolute;right:16px;top:14px;color:var(--mute);font-size:12px;letter-spacing:.06em}
+.credit{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);margin:0;color:var(--mute);font-size:12px;letter-spacing:.04em;pointer-events:none;white-space:nowrap}
 .moods{position:absolute;right:16px;bottom:18px;display:flex;gap:8px}
 .chip{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
 .chip[aria-pressed="true"]{border-color:var(--ink)}
@@ -87,6 +88,7 @@ input[type=range]{width:100%;accent-color:var(--glow)}
       <span class="knob"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/></svg></span>
       <span id="powerLbl">On</span>
     </button>
+    <p class="credit">made by Shivani.</p>
     <div class="moods" id="moods" aria-label="Light colour"></div>
   </div>
 
