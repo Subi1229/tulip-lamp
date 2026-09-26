@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}</style>
+<title>Mirror Garden Lamp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Karla:wght@400;500;700&display=swap">
+<style>
+:root{
+  color-scheme: dark;
+  --bg:#15110f; --panel:#1f1916; --line:#3a2f29; --ink:#f3e6d8; --mute:#a8978a;
+  --glow:#ffcf96; --accent:#ff9fb4;
+}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 Karla,system-ui,sans-serif;padding-inline:16px}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 32px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px}
+@media (max-width:860px){.wrap{grid-template-columns:1fr}}
+header{grid-column:1/-1;display:flex;align-items:end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+h1{font-family:Gloock,Georgia,serif;font-weight:400;font-size:clamp(28px,4vw,42px);margin:0;line-height:1.05;text-wrap:balance}
+header p{margin:4px 0 0;color:var(--mute);max-width:52ch}
+.stage{position:relative;border-radius:18px;overflow:hidden;background:#0d0a09;height:min(72vh,640px);min-height:380px;border:1px solid var(--line)}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+.power{position:absolute;left:18px;bottom:18px;display:flex;align-items:center;gap:12px;background:rgba(20,15,13,.7);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:999px;padding:6px 16px 6px 6px;color:var(--ink);font:600 13px Karla,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+.power .knob{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#2a221e;border:1px solid #4a3d35;transition:.3s}
+.power .knob svg{width:18px;height:18px;stroke:var(--mute);transition:.3s}
+.power[aria-pressed="true"] .knob{background:#ffd9a8;box-shadow:0 0 22px 4px rgba(255,200,140,.55);border-color:#ffe5c2}
+.power[aria-pressed="true"] .knob svg{stroke:#5a3413}
+.power:focus-visible,.btn:focus-visible,.swatch:focus-visible,.chip:focus-visible{outline:2px solid var(--glow);outline-offset:3px}
+.hint{position:absolute;right:16px;top:14px;color:var(--mute);font-size:12px;letter-spacing:.06em}
+.moods{position:absolute;right:16px;bottom:18px;display:flex;gap:8px}
+.chip{width:26px;height:26px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
+.chip[aria-pressed="true"]{border-color:var(--ink)}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:14px}
+aside h2{font-family:Gloock,Georgia,serif;font-weight:400;font-size:22px;margin:0}
+.lbl{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+#pad{width:100%;aspect-ratio:1;max-width:100%;border-radius:12px;background:
+  repeating-linear-gradient(0deg,transparent 0 23px,#2b231f 23px 24px),
+  repeating-linear-gradient(90deg,transparent 0 23px,#2b231f 23px 24px),#181311;
+  cursor:crosshair;touch-action:none;display:block;border:1px solid var(--line)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.swatch{width:26px;height:26px;border-radius:8px;border:2px solid transparent;cursor:pointer;padding:0}
+.swatch[aria-pressed="true"]{border-color:var(--ink)}
+.btn{flex:1;border:1px solid var(--line);background:#2a221e;color:var(--ink);border-radius:10px;padding:10px 12px;font:600 14px Karla,sans-serif;cursor:pointer}
+.btn.primary{background:var(--glow);color:#3a220d;border-color:var(--glow)}
+.btn:hover{filter:brightness(1.1)}
+.btn:disabled{opacity:.4;cursor:default;filter:none}
+#seeds{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.seed{position:relative;aspect-ratio:1;border-radius:10px;background:#181311;border:1px solid var(--line)}
+.seed img{width:100%;height:100%;display:block}
+.seed .pick{all:unset;display:block;width:100%;height:100%;border-radius:10px;cursor:pointer;opacity:.4;transition:.2s}
+.seed .pick[aria-pressed="true"]{opacity:1;box-shadow:0 0 0 2px var(--glow)}
+.seed .pick:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+button.seed.tulip{cursor:pointer;font:inherit;font-size:11px;opacity:.5}
+button.seed.tulip[aria-pressed="true"]{opacity:1;box-shadow:0 0 0 2px var(--glow);color:var(--ink)}
+.seed .del{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;border:0;background:#4a3d35;color:var(--ink);cursor:pointer;font-size:12px;line-height:20px;padding:0}
+.seed.tulip{display:grid;place-items:center;color:var(--mute);font-size:11px;text-align:center}
+.note{font-size:13px;color:var(--mute);margin:0}
+input[type=range]{width:100%;accent-color:var(--glow)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Mirror Garden Lamp</h1>
+      <p>A mirrored acrylic cube with a bed of LED tulips inside. Switch it on for a soft glow, or draw your own flowers and the lamp grows a garden of them.</p>
+    </div>
+  </header>
+
+  <div class="stage">
+    <canvas id="scene"></canvas>
+    <div class="hint">Drag to turn the lamp</div>
+    <button class="power" id="power" aria-pressed="true">
+      <span class="knob"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 7a8 8 0 1 0 11.4 0"/></svg></span>
+      <span id="powerLbl">On</span>
+    </button>
+    <div class="moods" id="moods" aria-label="Light colour"></div>
+  </div>
+
+  <aside>
+    <h2>Grow your own</h2>
+    <div class="lbl">Sketch a plant</div>
+    <canvas id="pad" width="256" height="256"></canvas>
+    <div class="row" id="swatches"></div>
+    <div>
+      <div class="lbl">Brush size</div>
+      <input id="size" type="range" min="3" max="22" value="9">
+    </div>
+    <div class="row">
+      <button class="btn" id="undo" disabled>Undo</button>
+      <button class="btn" id="clear">Clear</button>
+      <button class="btn primary" id="plant">Plant it</button>
+    </div>
+    <div class="lbl">Your garden</div>
+    <div id="seeds"></div>
+    <p class="note">Tap a saved drawing to grow it or take it out of the garden. One drawing fills the whole garden; four repeat as a 1‑2‑3‑4 pattern. Drawings stay saved in this browser.</p>
+    <button class="btn" id="reset">Back to tulips</button>
+  </aside>
+</div>
+
+<script type="importmap">
+{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+import {OutputPass} from 'three/addons/postprocessing/OutputPass.js';
+import {mergeGeometries} from 'three/addons/utils/BufferGeometryUtils.js';
+
+const canvas = document.getElementById('scene');
+const stage = canvas.parentElement;
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true, stencil:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.toneMapping = THREE.LinearToneMapping;
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x120c08);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+camera.position.set(3.4, 3.4, 4.8);
+const controls = new OrbitControls(camera, canvas);
+controls.target.set(0,-0.1,0);
+controls.enableDamping = true; controls.enablePan = false;
+controls.minDistance = 4; controls.maxDistance = 10;
+controls.maxPolarAngle = Math.PI*0.52; controls.minPolarAngle = 0.15;
+controls.autoRotate = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+controls.autoRotateSpeed = 0.6;
+
+// room
+const hemi = new THREE.HemisphereLight(0xffe6d0, 0x1a1210, 0.25); scene.add(hemi);
+const lampLight = new THREE.PointLight(0xff9448, 0, 9, 1.6); lampLight.position.set(0,-0.3,0); scene.add(lampLight);
+const table = new THREE.Mesh(new THREE.CircleGeometry(9,64), new THREE.MeshStandardMaterial({color:0x3a2a20, roughness:.85}));
+table.rotation.x = -Math.PI/2; table.position.y = -1.03; scene.add(table);
+
+// cube: half size 1, floor at y=-1
+const H = 1;
+// stencil mask = silhouette of the cube; reflections only render inside it
+const maskMat = new THREE.MeshBasicMaterial({colorWrite:false, depthWrite:false, stencilWrite:true, stencilRef:1,
+  stencilFunc:THREE.AlwaysStencilFunc, stencilZPass:THREE.ReplaceStencilOp});
+const mask = new THREE.Mesh(new THREE.BoxGeometry(2*H,2*H,2*H), maskMat);
+mask.renderOrder = -10; scene.add(mask);
+
+const glassMat = new THREE.MeshBasicMaterial({color:0x8f867e, envMap:scene.environment, reflectivity:1, transparent:true, opacity:.6, depthWrite:false, side:THREE.DoubleSide});
+const faces = [
+  [[0,0,H],[0,0,0]],[[0,0,-H],[0,Math.PI,0]],[[H,0,0],[0,Math.PI/2,0]],[[-H,0,0],[0,-Math.PI/2,0]],[[0,H,0],[-Math.PI/2,0,0]]
+];
+for(const [p,r] of faces){const m=new THREE.Mesh(new THREE.PlaneGeometry(2*H,2*H),glassMat);m.position.set(...p);m.rotation.set(...r);m.renderOrder=5;scene.add(m);}
+const floorMat = new THREE.MeshBasicMaterial({color:0xb8aca2, envMap:scene.environment, reflectivity:1, transparent:true, opacity:.35, depthWrite:false});
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(2*H,2*H), floorMat); floor.rotation.x=-Math.PI/2; floor.position.y=-H+0.002; floor.renderOrder=4; scene.add(floor);
+// acrylic corner frame
+const frameMat = new THREE.MeshPhysicalMaterial({color:0xf4efe9, roughness:.35, transmission:.6, thickness:.2, transparent:true, opacity:.7, depthWrite:false});
+const fr = 0.07;
+for(const a of [-1,1]) for(const b of [-1,1]){
+  const e1=new THREE.Mesh(new THREE.BoxGeometry(fr,2*H+fr,fr),frameMat); e1.position.set(a*H,0,b*H);
+  const e2=new THREE.Mesh(new THREE.BoxGeometry(2*H+fr,fr,fr),frameMat); e2.position.set(0,a*H,b*H);
+  const e3=new THREE.Mesh(new THREE.BoxGeometry(fr,fr,2*H+fr),frameMat); e3.position.set(a*H,b*H,0);
+  for(const e of [e1,e2,e3]){e.renderOrder=6;scene.add(e);}
+}
+
+// ---------- plant geometries ----------
+// bud = 3 outer + 3 inner petals, each a curved shell with a pointed tip and edges that tuck in
+function petal(W, rs, hs, rot, open=0){
+  const U=14, V=20, pos=[], col=[], idx=[];
+  const base=new THREE.Color(.62,.78,.5), body=new THREE.Color(1,1,1);
+  for(let j=0;j<=V;j++){ const v=j/V;
+    const r=.056*rs*Math.pow(Math.sin(Math.PI*Math.pow(v,.72)),.75);
+    const w=W*Math.sqrt(Math.max(0,1-Math.pow(v,5)));
+    const c=base.clone().lerp(body, THREE.MathUtils.smoothstep(v,.02,.32));
+    for(let i=0;i<=U;i++){ const t=i/U*2-1, th=rot+t*w;
+      const rr=r*(1-.13*(1-.6*open)*Math.pow(Math.abs(t),2.5)) + .0015*rs + open*.045*Math.pow(v,2.2);
+      pos.push(rr*Math.cos(th), v*.17*hs*(1-open*.12*v*v), rr*Math.sin(th)); col.push(c.r,c.g,c.b);
+    }}
+  for(let j=0;j<V;j++)for(let i=0;i<U;i++){const a=j*(U+1)+i,b=a+U+1;idx.push(a,b,a+1,a+1,b,b+1);}
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.setAttribute('color',new THREE.Float32BufferAttribute(col,3));
+  g.setIndex(idx); g.computeVertexNormals(); return g;
+}
+const petals=[];
+for(let k=0;k<3;k++){ petals.push(petal(1.2,1,1,k*2.094, k<2?1:0)); petals.push(petal(1.15,.9,.96,k*2.094+1.047)); }
+const cupGeo = mergeGeometries(petals);
+cupGeo.translate(0,.56,0);
+const stemGeo = new THREE.CylinderGeometry(.009,.011,.57,8); stemGeo.translate(0,.285,0);
+const leafA = new THREE.SphereGeometry(1,8,8); leafA.scale(.03,.2,.006); leafA.rotateZ(.2); leafA.translate(.04,.17,0);
+const leafB = leafA.clone(); leafB.rotateY(Math.PI*.85);
+const leafGeo = mergeGeometries([leafA,leafB]);
+const pA = new THREE.PlaneGeometry(.5,.5); pA.scale(1.3,1.3,1); pA.translate(0,.325,0);
+const pB = pA.clone(); pB.rotateY(Math.PI/2);
+const drawGeo = mergeGeometries([pA,pB]);
+
+function glowPatch(mat){
+  mat.onBeforeCompile = s=>{
+    s.fragmentShader = s.fragmentShader.replace('#include <emissivemap_fragment>',
+      '#include <emissivemap_fragment>\n#ifdef USE_INSTANCING_COLOR\n totalEmissiveRadiance *= vColor;\n#endif');
+  };
+  return mat;
+}
+function stencilize(m){m.stencilWrite=true;m.stencilRef=1;m.stencilFunc=THREE.EqualStencilFunc;return m;}
+
+const mats = []; // {mat, base, copy}
+function makeMat(opts, emissiveBase, isCopy, patch){
+  const m = new THREE.MeshStandardMaterial(opts);
+  if(patch) glowPatch(m);
+  if(isCopy) stencilize(m);
+  mats.push({m, base:emissiveBase});
+  return m;
+}
+
+// ---------- layout ----------
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+const N = 7, spots = [];
+{const r=rng(7); const step=1.76/N;
+ for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+  spots.push({x:-0.88+step*(j+.5)+(r()-.5)*step*.5, z:-0.88+step*(i+.5)+(r()-.5)*step*.5, rot:r()*6.28, s:.85+r()*.35, h:.8+r()*.35, tilt:(r()-.5)*.18, hue:r()});
+ }}
+const cells=[];
+for(let kx=-2;kx<=2;kx++)for(let kz=-2;kz<=2;kz++)for(let ky=0;ky<=1;ky++){
+  if(Math.abs(kx)+Math.abs(kz)>3) continue;
+  const m=new THREE.Matrix4().makeScale(kx%2?-1:1, ky?-1:1, kz%2?-1:1).setPosition(2*kx*H, ky?-2*H:0, 2*kz*H);
+  cells.push({m, real:kx===0&&kz===0&&ky===0, fade:Math.pow(.6,Math.abs(kx)+Math.abs(kz)+ky)});
+}
+
+// ---------- garden ----------
+let seeds = []; // {canvas, tex}
+let gardenGroup = new THREE.Group(); scene.add(gardenGroup);
+let mood = 'warm';
+const moodCols = {warm:[0xff9a3c], pink:[0xffb0c4], blue:[0xa9d6ff], yellow:[0xfff0a0], rainbow:[0xff9fb4,0xffd08a,0xfff39a,0xa8f0b8,0xa9d6ff,0xd2b4ff]};
+
+function buildGarden(){
+  const act = seeds.filter(x=>x.active);
+  scene.remove(gardenGroup);
+  gardenGroup.traverse(o=>{ if(o.isInstancedMesh) o.dispose(); });
+  mats.length=0;
+  gardenGroup = new THREE.Group(); scene.add(gardenGroup);
+  const types = act.length ? act.length : 1;
+  const byType = Array.from({length:types},()=>[]);
+  spots.forEach((s,i)=>byType[i%types].push(s));
+  const tmp=new THREE.Matrix4(), q=new THREE.Quaternion(), e=new THREE.Euler(), col=new THREE.Color();
+
+  const local = s=>{e.set(s.tilt,s.rot,s.tilt*.6); q.setFromEuler(e);
+    return new THREE.Matrix4().compose(new THREE.Vector3(s.x,-H,s.z), q, new THREE.Vector3(s.s, s.s*s.h, s.s));};
+
+  // one material per (glow colour, mirror depth) so the glow colour is set directly on the material
+  const pal = moodCols[mood];
+  for(const copy of [false,true]){
+    const useCells = cells.filter(c=>c.real!==copy);
+    byType.forEach((list,t)=>{
+      const buckets = new Map();
+      for(const c of useCells) for(const s of list){
+        const ci = Math.floor(s.hue*pal.length)%pal.length;
+        const key = ci+'|'+c.fade;
+        if(!buckets.has(key)) buckets.set(key,{ci, fade:c.fade, items:[]});
+        buckets.get(key).items.push([c,s]);
+      }
+      for(const {ci,fade,items} of buckets.values()){
+        const glowCol = new THREE.Color(pal[ci]);
+        const parts = [];
+        if(!act.length){
+          parts.push([cupGeo, makeMat({color:0x4a3024, roughness:.9, metalness:0, vertexColors:true, emissive:glowCol, side:THREE.DoubleSide}, .9*fade, copy)]);
+          parts.push([stemGeo, makeMat({color:0x6f9a58, roughness:.7, emissive:0x9fd07a}, .03*fade, copy)]);
+          parts.push([leafGeo, makeMat({color:0x7eab62, roughness:.6, emissive:0x9fd07a}, .03*fade, copy)]);
+        } else {
+          const tex = act[t].tex;
+          const ec = mood==='warm' ? new THREE.Color(1,.85,.7) : glowCol.clone().lerp(new THREE.Color(1,1,1),.35);
+          parts.push([drawGeo, makeMat({map:tex, emissiveMap:tex, emissive:ec, alphaTest:.35, side:THREE.DoubleSide, roughness:.6}, .6*fade, copy)]);
+        }
+        for(const [g,m] of parts){
+          const im = new THREE.InstancedMesh(g,m,items.length);
+          items.forEach(([c,s],k)=>{ tmp.multiplyMatrices(c.m, local(s)); im.setMatrixAt(k,tmp); });
+          im.frustumCulled=false; gardenGroup.add(im);
+        }
+      }
+    });
+  }
+  applyGlow(true);
+}
+
+// ---------- power ----------
+let on = true, glow = 1;
+function applyGlow(){
+  const g = glow;
+  for(const {m,base} of mats) m.emissiveIntensity = base*g;
+  lampLight.intensity = 1.1*g;
+  glassMat.opacity = .62 - .55*g;
+  floorMat.opacity = .45 - .2*g;
+  hemi.intensity = .35 - .15*g;
+  bloom.strength = .38*g;
+  renderer.toneMappingExposure = .9;
+}
+
+// ---------- post ----------
+const rt = new THREE.WebGLRenderTarget(1,1,{type:THREE.HalfFloatType, stencilBuffer:true, depthBuffer:true});
+const composer = new EffectComposer(renderer, rt);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(1,1), .38, .5, .35);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+function resize(){
+  const w=stage.clientWidth, h=stage.clientHeight;
+  renderer.setSize(w,h,false); composer.setSize(w,h);
+  camera.aspect=w/h; camera.position.setLength(w<560?7.2:6.4); camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(stage); resize();
+
+const powerBtn = document.getElementById('power');
+powerBtn.onclick = ()=>{on=!on; powerBtn.setAttribute('aria-pressed',on); document.getElementById('powerLbl').textContent=on?'On':'Off';};
+
+// moods
+const moodsEl=document.getElementById('moods');
+const moodCss={warm:'#ffa45c',pink:'#ffb0c4',blue:'#a9d6ff',yellow:'#fff0a0',rainbow:'conic-gradient(#ff9fb4,#ffd08a,#fff39a,#a8f0b8,#a9d6ff,#d2b4ff,#ff9fb4)'};
+for(const k in moodCss){const b=document.createElement('button');b.className='chip';b.style.background=moodCss[k];b.title=k;b.setAttribute('aria-label',k+' light');b.setAttribute('aria-pressed',k===mood);
+  b.onclick=()=>{mood=k;[...moodsEl.children].forEach(c=>c.setAttribute('aria-pressed',c===b));buildGarden();};moodsEl.appendChild(b);}
+
+// ---------- drawing pad ----------
+const pad=document.getElementById('pad'), ctx=pad.getContext('2d');
+const brushCols=['#ff8fab','#ffb86b','#fff07a','#c9a7ff','#8fd0ff','#ffffff','#7cc36a'];
+let brush=brushCols[0];
+const sw=document.getElementById('swatches');
+brushCols.forEach((c,i)=>{const b=document.createElement('button');b.className='swatch';b.style.background=c;b.setAttribute('aria-label','Colour '+c);b.setAttribute('aria-pressed',i===0);
+  b.onclick=()=>{brush=c;[...sw.children].forEach(x=>x.setAttribute('aria-pressed',x===b));};sw.appendChild(b);});
+let drawing=false,last=null,inked=false;
+const pos=ev=>{const r=pad.getBoundingClientRect();return[(ev.clientX-r.left)*pad.width/r.width,(ev.clientY-r.top)*pad.height/r.height];};
+pad.addEventListener('pointerdown',ev=>{snap();drawing=true;last=pos(ev);pad.setPointerCapture(ev.pointerId);stroke(last,last);});
+pad.addEventListener('pointermove',ev=>{if(!drawing)return;const p=pos(ev);stroke(last,p);last=p;});
+addEventListener('pointerup',()=>drawing=false);
+function stroke(a,b){ctx.strokeStyle=brush;ctx.lineWidth=+document.getElementById('size').value;ctx.lineCap='round';ctx.lineJoin='round';
+  ctx.beginPath();ctx.moveTo(...a);ctx.lineTo(...b);ctx.stroke();inked=true;}
+const history=[], undoBtn=document.getElementById('undo');
+function snap(){history.push({img:ctx.getImageData(0,0,256,256),inked});if(history.length>40)history.shift();undoBtn.disabled=false;}
+function undo(){const h=history.pop();if(!h)return;ctx.putImageData(h.img,0,0);inked=h.inked;undoBtn.disabled=!history.length;}
+undoBtn.onclick=undo;
+addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!e.shiftKey){e.preventDefault();undo();}});
+document.getElementById('clear').onclick=()=>{if(!inked)return;snap();ctx.clearRect(0,0,256,256);inked=false;};
+
+const STORE='mirror-garden-drawings';
+function save(){try{localStorage.setItem(STORE,JSON.stringify(seeds.map(x=>({src:x.canvas.toDataURL(),active:x.active}))));}catch(e){}}
+function addSeed(src, active=true){
+  const c=document.createElement('canvas');c.width=c.height=256;c.getContext('2d').drawImage(src,0,0);
+  const tex=new THREE.CanvasTexture(c); tex.colorSpace=THREE.SRGBColorSpace; tex.anisotropy=4;
+  seeds.push({canvas:c,tex,active});
+}
+const refresh=()=>{renderSeeds();buildGarden();save();};
+document.getElementById('plant').onclick=()=>{ if(!inked) return; addSeed(pad); refresh(); ctx.clearRect(0,0,256,256); inked=false; history.length=0; undoBtn.disabled=true; };
+const toTulips=()=>{seeds.forEach(x=>x.active=false);refresh();};
+document.getElementById('reset').onclick=toTulips;
+function renderSeeds(){
+  const el=document.getElementById('seeds'); el.innerHTML='';
+  const none=!seeds.some(x=>x.active);
+  const tb=document.createElement('button');tb.className='seed tulip';tb.textContent='LED tulips';tb.setAttribute('aria-pressed',none);tb.onclick=toTulips;el.appendChild(tb);
+  seeds.forEach((x,i)=>{const d=document.createElement('div');d.className='seed';
+    const b=document.createElement('button');b.className='pick';b.setAttribute('aria-pressed',x.active);b.setAttribute('aria-label',(x.active?'Remove from garden':'Grow in garden')+': drawing '+(i+1));
+    const img=new Image();img.src=x.canvas.toDataURL();img.alt='';b.appendChild(img);
+    b.onclick=()=>{x.active=!x.active;refresh();};
+    const del=document.createElement('button');del.className='del';del.textContent='×';del.setAttribute('aria-label','Delete drawing '+(i+1));
+    del.onclick=()=>{x.tex.dispose();seeds.splice(i,1);refresh();};
+    d.append(b,del);el.appendChild(d);});
+}
+try{const saved=JSON.parse(localStorage.getItem(STORE)||'[]');
+  let left=saved.length; if(!left){renderSeeds();buildGarden();}
+  const order=saved.map(()=>null);
+  saved.forEach((o,k)=>{const im=new Image();im.onload=()=>{order[k]=[im,o.active];if(--left===0){order.forEach(([m,a])=>addSeed(m,a));renderSeeds();buildGarden();}};im.onerror=()=>{if(--left===0){order.filter(Boolean).forEach(([m,a])=>addSeed(m,a));renderSeeds();buildGarden();}};im.src=o.src;});
+}catch(e){}
+renderSeeds(); buildGarden();
+
+const clock=new THREE.Clock();
+renderer.setAnimationLoop(()=>{
+  const dt=Math.min(clock.getDelta(),.05);
+  const target=on?1:0;
+  if(Math.abs(glow-target)>.001){glow+=(target-glow)*Math.min(1,dt*4);applyGlow();}
+  controls.update();
+  composer.render();
+});
+</script>
+
+</html>
