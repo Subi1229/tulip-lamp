@@ -58,6 +58,18 @@ button.seed.tulip[aria-pressed="true"]{opacity:1;box-shadow:0 0 0 2px var(--glow
 .seed.tulip{display:grid;place-items:center;color:var(--mute);font-size:11px;text-align:center}
 .note{font-size:13px;color:var(--mute);margin:0}
 input[type=range]{width:100%;accent-color:var(--glow)}
+/* desktop: lamp and drawing panel both fit in one screen, no page scroll */
+@media (min-width:861px){
+  html,body{overflow:hidden}
+  .wrap{height:100%;box-sizing:border-box;grid-template-rows:auto minmax(0,1fr);padding-block:16px}
+  header p{font-size:14px}
+  .stage{height:auto;min-height:0}
+  aside{min-height:0;overflow-y:auto;gap:10px;padding:16px}
+  #pad{width:min(100%,30vh);align-self:center}
+  #seeds{grid-template-columns:repeat(5,1fr)}
+  .btn{padding:8px 10px}
+  #reset{flex:none}
+}
 </style>
 
 <div class="wrap">
@@ -94,8 +106,8 @@ input[type=range]{width:100%;accent-color:var(--glow)}
     </div>
     <div class="lbl">Your garden</div>
     <div id="seeds"></div>
-    <p class="note">Tap a saved drawing to grow it or take it out of the garden. One drawing fills the whole garden; four repeat as a 1‑2‑3‑4 pattern. Drawings stay saved in this browser.</p>
-    <button class="btn" id="reset">Back to tulips</button>
+    <p class="note">Tap a drawing to grow it or take it out. One drawing fills the garden; several take turns.</p>
+    <button class="btn" id="reset" style="flex:none">Back to tulips</button>
   </aside>
 </div>
 
